@@ -39,6 +39,9 @@ function start() {
           value: "viewEmployeesByManager"
         },
         { name: "Add employee", value: "addEmployee" },
+        { name: "Add role", value: "addRole" },
+        { name: "Add department", value: "addDepartment" },
+
         { name: "Remove employee", value: "removeEmployee" },
         { name: "Update employee Role", value: "updateEmployeeRole" },
         { name: "Update employee Manager", value: "updateEmployeeManager" },
@@ -58,6 +61,12 @@ function start() {
           break;
         case "addEmployee":
           addEmployee();
+          break;
+        case "addRole":
+          addRole();
+          break;
+        case "addDepartment":
+          addDepartment();
           break;
         case "removeEmployee":
           removeEmployee();
@@ -174,4 +183,21 @@ function viewEmployeesByManager() {
         });
     }
   );
+}
+function addDepartment() {
+  inquirer
+    .prompt({
+      name: "name",
+      type: "text",
+      message: "What is the department name?"
+    })
+    .then(function(answer) {
+      connection.query(
+        `INSERT INTO departments (name) VALUES ("${answer.name}")`,
+        function(err, res) {
+          if (err) throw err;
+          start();
+        }
+      );
+    });
 }
