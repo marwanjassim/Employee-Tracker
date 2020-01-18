@@ -30,6 +30,8 @@ function start() {
       message: "What do you like to do?",
       choices: [
         { name: "View all employees", value: "viewEmployees" },
+        { name: "View all roles", value: "viewRoles" },
+        { name: "View all departments", value: "viewDepartments" },
         {
           name: "View all employees by Department",
           value: "viewEmployeesByDepartment"
@@ -53,6 +55,12 @@ function start() {
       switch (answer.action) {
         case "viewEmployees":
           viewEmployees();
+          break;
+        case "viewRoles":
+          viewRoles();
+          break;
+        case "viewDepartments":
+          viewDepartments();
           break;
         case "viewEmployeesByDepartment":
           viewEmployeesByDepartment();
@@ -97,6 +105,27 @@ function viewEmployees() {
       start();
     }
   );
+}
+
+function viewRoles() {
+  connection.query(
+    `SELECT roles.id, roles.title, roles.salary, departments.name as department_name
+     FROM roles
+     INNER JOIN departments ON roles.department_id=departments.id`,
+    function(err, res) {
+      if (err) throw err;
+      console.log(cTable.getTable(res));
+      start();
+    }
+  );
+}
+
+function viewDepartments() {
+  connection.query(`SELECT id, name FROM departments`, function(err, res) {
+    if (err) throw err;
+    console.log(cTable.getTable(res));
+    start();
+  });
 }
 
 function viewEmployeesByDepartment() {
