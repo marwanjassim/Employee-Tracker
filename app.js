@@ -43,6 +43,7 @@ function start() {
         { name: "Add department", value: "addDepartment" },
 
         { name: "Remove employee", value: "removeEmployee" },
+        { name: "Remove role", value: "removeRole" },
         { name: "Update employee Role", value: "updateEmployeeRole" },
         { name: "Exit", value: "exit" }
       ]
@@ -69,6 +70,9 @@ function start() {
           break;
         case "removeEmployee":
           removeEmployee();
+          break;
+        case "removeRole":
+          removeRole();
           break;
         case "updateEmployeeRole":
           updateEmployeeRole();
@@ -364,4 +368,29 @@ function removeEmployee() {
         });
     }
   );
+}
+
+function removeRole() {
+  connection.query(`SELECT title as name, id as value FROM roles`, function(
+    err,
+    res
+  ) {
+    if (err) throw err;
+    inquirer
+      .prompt({
+        name: "role",
+        type: "list",
+        message: "Which role would you like to remove?",
+        choices: res
+      })
+      .then(function(answers) {
+        connection.query(
+          `DELETE FROM roles WHERE roles.id=${answers.role}`,
+          function(err, res) {
+            if (err) throw err;
+            start();
+          }
+        );
+      });
+  });
 }
