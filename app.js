@@ -40,8 +40,8 @@ function start() {
         },
         { name: "Add employee", value: "addEmployee" },
         { name: "Remove employee", value: "removeEmployee" },
-        { name: "Update employee role", value: "updateEmployeeRole" },
-        { name: "update employee Manager", value: "updateEmployeeManager" }
+        { name: "Update employee Role", value: "updateEmployeeRole" },
+        { name: "Update employee Manager", value: "updateEmployeeManager" }
       ]
     })
     .then(function(answer) {
@@ -49,7 +49,7 @@ function start() {
         case "viewEmployees":
           viewEmployees();
           break;
-        case "viewEmplyeesByDepartment":
+        case "viewEmployeesByDepartment":
           viewEmployeesByDepartment();
           break;
         case "viewEmployeesByManager":
@@ -79,4 +79,32 @@ function viewEmployees() {
       start();
     }
   );
+}
+
+function viewEmployeesByDepartment() {
+  connection.query("SELECT * FROM departments", function(err, res) {
+    // map sql name and id to choice name and value
+    var departmentChoices = res.map(function(item) {
+      return { name: item.name, value: item.id };
+    });
+    inquirer
+      .prompt({
+        name: "department",
+        type: "list",
+        message: "Choose a department",
+        choices: departmentChoices
+      })
+      .then(function(answer) {
+        connection.query(
+          `SELECT e.id, e.first_name, e.last_name, roles.title, roles.salary, CONCAT_WS(' ', m.first_name, m.last_name) as manager
+              FROM employees e
+              INNER JOIN roles ON e.role_id=roles.id AND roles.department_id=${answer.department}
+              LEFT JOIN employees m on e.manager_id=m.id`,
+          function(err, res) {
+            console.log(cTable.getTable(res));
+            start();
+          }
+        );
+      });
+  });
 }
