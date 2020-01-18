@@ -339,3 +339,29 @@ function updateEmployeeRole() {
     );
   });
 }
+
+function removeEmployee() {
+  connection.query(
+    `SELECT CONCAT_WS(' ', m.first_name, m.last_name) as name, m.id as value
+        FROM employees m`,
+    function(err, employeesResult) {
+      if (err) throw err;
+      inquirer
+        .prompt({
+          name: "employee",
+          type: "list",
+          message: "Which employee would you like to remove?",
+          choices: employeesResult
+        })
+        .then(function(answers) {
+          connection.query(
+            `DELETE FROM employees WHERE employees.id=${answers.employee}`,
+            function(err, res) {
+              if (err) throw err;
+              start();
+            }
+          );
+        });
+    }
+  );
+}
