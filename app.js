@@ -44,7 +44,6 @@ function start() {
 
         { name: "Remove employee", value: "removeEmployee" },
         { name: "Update employee Role", value: "updateEmployeeRole" },
-        { name: "Update employee Manager", value: "updateEmployeeManager" },
         { name: "Exit", value: "exit" }
       ]
     })
@@ -73,9 +72,6 @@ function start() {
           break;
         case "updateEmployeeRole":
           updateEmployeeRole();
-          break;
-        case "updateEmployeeManager":
-          updateEmployeeManager();
           break;
         case "exit":
           process.exit();
@@ -248,7 +244,7 @@ function addEmployee() {
     if (err) throw err;
     connection.query(
       `SELECT CONCAT_WS(' ', m.first_name, m.last_name) as name, m.id as value
-      FROM employees m`,
+        FROM employees m`,
       function(err, employeesResult) {
         if (err) throw err;
         inquirer
@@ -292,7 +288,47 @@ function addEmployee() {
             }
             connection.query(
               `INSERT INTO employees (first_name, last_name, role_id, manager_id)
-                VALUES ("${answers.firstName}", "${answers.lastName}", ${answers.role}, ${managerID})`,
+                  VALUES ("${answers.firstName}", "${answers.lastName}", ${answers.role}, ${managerID})`,
+              function(err, res) {
+                if (err) throw err;
+                start();
+              }
+            );
+          });
+      }
+    );
+  });
+}
+
+function updateEmployeeRole() {
+  connection.query("SELECT title as name, id as value FROM roles", function(
+    err,
+    rolesResult
+  ) {
+    if (err) throw err;
+    connection.query(
+      `SELECT CONCAT_WS(' ', m.first_name, m.last_name) as name, m.id as value
+        FROM employees m`,
+      function(err, employeesResult) {
+        if (err) throw err;
+        inquirer
+          .prompt([
+            {
+              name: "employee",
+              type: "list",
+              message: "What employee would you like to update?",
+              choices: employeesResult
+            },
+            {
+              name: "role",
+              type: "list",
+              message: "What is the employee's role?",
+              choices: rolesResult
+            }
+          ])
+          .then(function(answers) {
+            connection.query(
+              `UPDATE employees SET role_id=${answers.role} WHERE id=${answers.employee}`,
               function(err, res) {
                 if (err) throw err;
                 start();
