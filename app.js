@@ -44,6 +44,7 @@ function start() {
 
         { name: "Remove employee", value: "removeEmployee" },
         { name: "Remove role", value: "removeRole" },
+        { name: "Remove department", value: "removeDepartment" },
         { name: "Update employee Role", value: "updateEmployeeRole" },
         { name: "Exit", value: "exit" }
       ]
@@ -73,6 +74,9 @@ function start() {
           break;
         case "removeRole":
           removeRole();
+          break;
+        case "removeDepartment":
+          removeDepartment();
           break;
         case "updateEmployeeRole":
           updateEmployeeRole();
@@ -386,6 +390,31 @@ function removeRole() {
       .then(function(answers) {
         connection.query(
           `DELETE FROM roles WHERE roles.id=${answers.role}`,
+          function(err, res) {
+            if (err) throw err;
+            start();
+          }
+        );
+      });
+  });
+}
+
+function removeDepartment() {
+  connection.query(`SELECT name, id as value FROM departments`, function(
+    err,
+    res
+  ) {
+    if (err) throw err;
+    inquirer
+      .prompt({
+        name: "department",
+        type: "list",
+        message: "Which department would you like to remove?",
+        choices: res
+      })
+      .then(function(answers) {
+        connection.query(
+          `DELETE FROM departments WHERE departments.id=${answers.department}`,
           function(err, res) {
             if (err) throw err;
             start();
