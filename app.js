@@ -201,6 +201,7 @@ function addDepartment() {
       );
     });
 }
+
 function addRole() {
   connection.query("SELECT name, id as value FROM departments", function(
     err,
@@ -236,5 +237,69 @@ function addRole() {
           }
         );
       });
+  });
+}
+
+function addEmployee() {
+  connection.query("SELECT title, id as value FROM roles", function(
+    err,
+    rolesResult
+  ) {
+    if (err) throw err;
+    connection.query(
+      `SELECT CONCAT_WS(' ', m.first_name, m.last_name) as name, m.id as value
+      FROM employees m`,
+      function(err, employeesResult) {
+        if (err) throw err;
+        inquirer
+          .prompt([
+            {
+              name: "hasManager",
+              type: "confirm",
+              message: "Does this employee have a manager?"
+            },
+            {
+              name: "manager",
+              type: "list",
+              message: "What is the employee's manager?",
+              choices: employeesResult,
+              when: function(answers) {
+                return answers.hasManager;
+              }
+            },
+            {
+              name: "role",
+              type: "list",
+              message: "What is the employee's role?",
+              choices: rolesResult
+            },
+            {
+              name: "firstName",
+              type: "text",
+              message: "What is the employee's first name?"
+            },
+            {
+              name: "lastName",
+              type: "text",
+              message: "What is the employee's last name?"
+            }
+          ])
+          .then(function(answers) {
+            var managerID = "NULL";
+            // If user picked a manager, assign the id
+            if (answers.hasManager) {
+              managerID = answers.manager;
+            }
+            connection.query(
+              `INSERT INTO employees (first_name, last_name, role_id, manager_id)
+                VALUES ("${answers.firstName}", "${answers.lastName}", ${answers.role}, ${managerID})`,
+              function(err, res) {
+                if (err) throw err;
+                start();
+              }
+            );
+          });
+      }
+    );
   });
 }
