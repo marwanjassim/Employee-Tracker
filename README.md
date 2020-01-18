@@ -2,7 +2,7 @@
 This App will allow you to add, remove, list and update employees from your firm.
 
 ## Preview
-![main Page}(./imgs/main_menu.jpg)
+![main page](./imgs/main_menu.jpg)
 ![all employees](./imgs/all_employees.jpg)
 
 ## Need to Install
