@@ -10,19 +10,19 @@ VALUES (3, "Accounting");
 --------------- ROLES -----------------
 -- This is a Manager in HR so department_id is 1
 INSERT INTO roles (id, title, salary, department_id)
-VALUES (1, "Manager", 80000.0, 1);
+VALUES (1, "HR Manager", 80000.0, 1);
 INSERT INTO roles (id, title, salary, department_id)
-VALUES (2, "Employee", 45000.0, 1);
+VALUES (2, "Recruiter", 45000.0, 1);
 -- Marketing Department
 INSERT INTO roles (id, title, salary, department_id)
-VALUES (3, "Manager", 100000.0, 2);
+VALUES (3, "Marketing Manager", 100000.0, 2);
 INSERT INTO roles (id, title, salary, department_id)
-VALUES (4, "Employee", 60000.0, 2);
+VALUES (4, "Marketing Associate", 60000.0, 2);
 -- Accounting 
 INSERT INTO roles (id, title, salary, department_id)
-VALUES (5, "Manager", 80000.0, 3);
+VALUES (5, "Head Accountant", 80000.0, 3);
 INSERT INTO roles (id, title, salary, department_id)
-VALUES (6, "Employee", 60000.0, 3);
+VALUES (6, "Accountant", 60000.0, 3);
 --------------- EMPLOYEES ----------------
 INSERT INTO employees (id, first_name, last_name, role_id, manager_id)
 VALUES (1, "Marwan", "Jassim", 1, NULL);
