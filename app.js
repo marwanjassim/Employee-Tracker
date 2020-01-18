@@ -241,7 +241,7 @@ function addRole() {
 }
 
 function addEmployee() {
-  connection.query("SELECT title, id as value FROM roles", function(
+  connection.query("SELECT title as name, id as value FROM roles", function(
     err,
     rolesResult
   ) {
